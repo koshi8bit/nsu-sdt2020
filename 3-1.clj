@@ -1,50 +1,5 @@
-(ns lab1.core
+(ns labs.core
   (:gen-class))
-
-;;(let [foo (future (Thread/sleep 1000) 3)]
-;;    @foo
-;;)
-
-(defn heavy-inc [n]
-    (Thread/sleep 100)
-    (inc n)
-)
-
-;;(time
-;;    (->>
-;;        (iterate inc 0)
-;;        (take 10)
-;;        (map #(future (heavy-inc %)))
-;;        (map deref)
-;;        (doall)
-;;    )
-;;)
-
-(defn partition-rec [n seq-]
-    (partition n seq-)
-    (if (>= (count seq-) n)
-        (cons (take n seq-) (partition-rec n (drop n seq-)))
-        '()
-    )
-)
-
-(defn partition- [n seq-]
-    (lazy-seq
-        (cons (take n seq-) (drop n seq-))
-    )
-)
-
-(defn filterrr [pred seqq threads]
-    (let [l (Math/ceil (/ (count seqq) threads))]
-        (println "l" l)
-    )
-)
-
-
-;;(partition-rec 2 '(1 2 3 4 5 6))
-
-;;(filterrr even? '(1 2 3 4 5 6 2)
-
 
 (defn pmap- [f seqq]
     (->>
@@ -54,10 +9,49 @@
     )
 )
 
-(time
-    (->>
-        (pmap- heavy-inc (range 200))
-        (doall)
-        (take 10)
-    )
+(defn heavy-inc [n]
+    (Thread/sleep 100)
+    (inc n)
 )
+
+(defn heavy-even? [n]
+    (Thread/sleep 100)
+    (even? n)
+)
+
+(defn filter- [pred seqq]
+    ;;(println
+        (->>
+            (map list seqq (pmap- pred seqq))
+            (doall)
+            (filter second)
+            (map first)
+        )
+    ;;)
+)
+
+(defn -main
+    "I don't do a whole lot ... yet."
+    [& args]
+    (println "vanila filter")
+    (time
+        (println (take 5 (filter heavy-even? (range 1000))))
+    )
+
+    (println)
+    (println "FAAAST filter")
+    (time
+        (println (take 5 (filter- heavy-even? (range 1000))))
+    )
+
+    (println)
+    (println "vanila filter")
+    (time
+        (println (take 5 (filter heavy-even? (range 1000))))
+    )
+
+    (println "fin!")
+)
+
+
+(-main)
