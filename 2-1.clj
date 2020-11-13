@@ -18,29 +18,15 @@
 (def integrate-mem (memoize integrate))
 
 (letfn [(f [x] (* x x))]
-  (println "1")
+  (println "calc")
   (time (integrate-mem f 100 1))
   (time (integrate-mem f 200 1))
   (time (integrate-mem f 300 1))
   (time (integrate-mem f 400 1))
   (time (integrate-mem f 500 1))
-  (println "2")
+  (println "read from mem")
   (time (integrate-mem f 9 1))) ; mem ok
 
 (time (integrate-mem #(* x x) 200 1) ; stack fault
 (time (integrate-mem #(* x x) 9 1))  ; not memed, тк функция каждый раз новая для интерпритатора
 
-;;--------------
-;; better way
-;;(let [seqq (map #(* 2 %) (range))]
-;;    (->>
-;;        (map
-;;            #(calc-trap (fn [x] 1) %1 %2)
-;;            seqq
-;;            (rest seqq)
-;;        )
-;;        (reductions + 0)
-;;        (take 10)
-;;    )
-;;)
-;;--------------

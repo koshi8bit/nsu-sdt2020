@@ -4,20 +4,20 @@
 (defn calc-trap [f a b]
   (* (/ (+ (f a) (f b)) 2) (- b a)))
 
+
 ;;--------------
 ;; better way
-(let [seqq (map #(* 2 %) (range))]
-    (->>
-        (map
-            #(calc-trap (fn [x] 1) %1 %2)
-            seqq
-            (rest seqq)
-        )
-        (reductions + 0)
-        (take 10)
-    )
-)
-
+;;(let [seqq (map #(* 2 %) (range))]
+;;    (->>
+;;        (map
+;;            #(calc-trap (fn [x] 1) %1 %2)
+;;            seqq
+;;            (rest seqq)
+;;        )
+;;        (reductions + 0)
+;;        (take 10)
+;;    )
+;;)
 ;;--------------
 
 (defn get-integrator [f begin step]
