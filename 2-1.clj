@@ -28,4 +28,19 @@
   (time (integrate-mem f 9 1))) ; mem ok
 
 (time (integrate-mem #(* x x) 200 1) ; stack fault
-(time (integrate-mem #(* x x) 9 1))  ; not memed
+(time (integrate-mem #(* x x) 9 1))  ; not memed, тк функция каждый раз новая для интерпритатора
+
+;;--------------
+;; better way
+;;(let [seqq (map #(* 2 %) (range))]
+;;    (->>
+;;        (map
+;;            #(calc-trap (fn [x] 1) %1 %2)
+;;            seqq
+;;            (rest seqq)
+;;        )
+;;        (reductions + 0)
+;;        (take 10)
+;;    )
+;;)
+;;--------------
