@@ -1,9 +1,9 @@
-(ns lab1.core
+(ns labs.core
   (:gen-class))
+
 
 (defn calc-trap [f a b]
   (* (/ (+ (f a) (f b)) 2) (- b a)))
-
 
 ;;--------------
 ;; better way
@@ -29,9 +29,11 @@
     )
 )
 
-(let [integrator (get-integrator (fn [x] 1) 0 1)]
-    (time (integrator 10000))
-    (time (integrator 10015))
-    (time (integrator  9985))
+(let [integrator (get-integrator (fn [x] x) 0 1/2)]
+    ;(time (integrator 10000))  ;; Elapsed time: 332.0941 msecs
+    ;(time (integrator 10015))  ;; Elapsed time: 1.2308 msecs
+    ;(time (integrator  9985))  ;; Elapsed time: 0.5012 msecs
+    (time (integrator     1))  ;; 1/2 для y=x
+    (time (integrator     2))  ;; 3/2 для y=x ???
 )
 
