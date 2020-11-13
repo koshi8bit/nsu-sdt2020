@@ -22,7 +22,8 @@
 (defn filter- [pred seqq]
     ;;(println
         (->>
-            (map list seqq (pmap- pred seqq))
+            (pmap- pred seqq)
+            (map list seqq)
             (doall)
             (filter second)
             (map first)
