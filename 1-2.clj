@@ -43,3 +43,15 @@
 (println "f3 a" (f3 2 '(:a :b :c)))
 (println "f3 b" (f3 2 '(:a [:b :c] "d")))
 
+
+
+
+
+(defn single_connector [word lst]
+  (loop [acc `() word word lst lst]
+    (if (empty? lst)
+      acc
+      (if (= (first word) (first lst))
+        (recur acc word (rest lst))
+        (recur (cons (cons (first lst) word) acc)
+               word (rest lst))))))
