@@ -1,5 +1,3 @@
-;still in progress
-
 (ns lab1.core
   (:gen-class))
 
