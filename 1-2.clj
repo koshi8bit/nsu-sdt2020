@@ -3,25 +3,34 @@
 
 (defn f1 [w alph]
     ;(println "f1" w alph)
-    (if (empty? alph)
-        '()
-        (if (not= (first w) (first alph))
-            (cons (cons (first alph) w)
-                    (f1 w (rest alph)))
-            (f1 w (rest alph))
+    (loop [acc `() w w alph alph]
+        (if (empty? alph)
+            acc
+            (if (not= (first w) (first alph))
+                (recur (cons (cons (first alph) w) acc)
+                        w (rest alph))
+                (recur acc w (rest alph))
+            )
         )
     )
 )
+
 (defn f2 [w alph]
-    ;(println "f2" w alph)
-    (if (empty? w)
-        '()
-        (concat
-            (f1 (first w) alph)
-            (f2 (rest w) alph)
+    (loop [acc `() w w alph alph]
+        ;(println "f2" w alph)
+        (if (empty? w)
+            acc
+            (recur
+                (concat
+                    acc
+                    (f1 (first w) alph)
+                )
+                (rest w)
+            )
         )
     )
 )
+
 
 (defn f3 [n alph]
     ;(println "f3+" n alph)
