@@ -27,28 +27,39 @@
 
 
 (defn partition- [n seq-]
+    ;(println "partition-" n seq-)
+    (let [c (count seq-)]
+        (cond
+            (> c n)
+                (do
+                    ;(println ">" seq-)
+                    (cons (take n seq-) (partition- n (drop n seq-)))
+                )
 
-    (cond
-        (> (count seq-) n)
-            (cons (take n seq-) (partition- n (drop n seq-)))
+            (= c 0)
+                (do
+                    ;(println "=" seq-)
+                    '()
+                )
 
-        (= (count seq-) 0)
-            '()
-
-        (< 0 (count seq-) n)
-            (list seq-)
+            (and (< 0 c) (<= c n))
+                (do
+                    ;(println "< <=" seq-)
+                    (list seq-)
+                )
+        )
     )
 )
 
 
-;;(let [r (range 5) split 3]
+;;(let [r (range 5) split 1]
 ;;    (println (partition- split r))
-;;    (println (partition split r))
+;;    ;(println (partition split r))
 ;;)
 
 (defn split-by-threads [threads coll]
     (let [res (Math/ceil (/ (count coll) threads))] ;; Math/ceil vs Math/round
-        ;(println "split-by-threads t:" threads "res:" res "coll:" coll)
+        (println "split-by-threads t:" threads "res:" res "coll:" coll)
         res
     )
 )
@@ -56,9 +67,9 @@
 
 
 
-(let [coll (range 5) t 4]
-    (println (split-by-threads t coll))
-    ;(println (partition- (split-by-threads t coll) coll))
+(let [coll (range 7) t 4]
+    ;(println (split-by-threads t coll))
+    (println (partition- (split-by-threads t coll) coll))
 )
 
 
