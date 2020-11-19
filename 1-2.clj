@@ -1,7 +1,7 @@
 (ns lab1.core
   (:gen-class))
 
-(defn f1 [w alph]
+(defn joiner [w alph]
     ;(println "f1" w alph)
     (loop [acc `() w w alph alph]
         (if (empty? alph)
@@ -15,7 +15,7 @@
     )
 )
 
-(defn f2 [w alph]
+(defn joiner-words [w alph]
     (loop [acc `() w w alph alph]
         ;(println "f2" w alph)
         (if (empty? w)
@@ -23,24 +23,31 @@
             (recur
                 (concat
                     acc
-                    (f1 (first w) alph)
+                    (joiner (first w) alph)
                 )
                 (rest w)
+                alph
             )
         )
     )
 )
 
 
-(defn f3 [n alph]
+
+(defn mix [n alph]
     ;(println "f3+" n alph)
-    (if (> n 1)
-        (f2
-            (f3 (dec n) alph)
-            alph
+    (loop [acc '(()) n n alph alph]
+        (if (> n 0)
+            (recur
+                (joiner-words acc alph)
+                (dec n)
+                alph
+            )
+            acc
         )
-        (f2 '(()) alph))
+    )
 )
+
 
 
 ;(println "f1 a" (f1 '() '(:a :b :c)))      ;((a) (b) (c))
@@ -49,18 +56,5 @@
 ;(println "f2" (f2 '((:a) (:b)) '(:a :b :c)))   ;((b a) (c a) (a b) (c b))
 ;(println "f2+" (f2 '(()) '(:a :b :c)))
 
-(println "f3 a" (f3 2 '(:a :b :c)))
-(println "f3 b" (f3 2 '(:a [:b :c] "d")))
-
-
-
-
-
-(defn single_connector [word lst]
-  (loop [acc `() word word lst lst]
-    (if (empty? lst)
-      acc
-      (if (= (first word) (first lst))
-        (recur acc word (rest lst))
-        (recur (cons (cons (first lst) word) acc)
-               word (rest lst))))))
+;(println "f3 a" (f3 2 '(:a :b :c)))
+(println "f3 b" (mix 2 '(:a [:b :c] "d")))
