@@ -4,7 +4,7 @@
 
 (defn calc-trap [f a b]
     (let [res (* (/ (+ (f a) (f b)) 2) (- b a))]
-        (println "calc-trap" res)
+        ;(println "calc-trap" res)
         res
     )
   )
@@ -37,10 +37,10 @@
 )
 
 (let [integrator (get-integrator (fn [x] x) 0 1)]
-    ;(time (integrator 10000))  ;; Elapsed time: 332.0941 msecs
-    ;(time (integrator 10015))  ;; Elapsed time: 1.2308 msecs
-    (time (integrator     20))  ;; Elapsed time: 0.5012 msecs
+    (time (integrator 10000))  ;; Elapsed time: 332.0941 msecs
+    (time (integrator 10015))  ;; Elapsed time: 1.2308 msecs
+    (time (integrator    20))  ;; Elapsed time: 0.5012 msecs
     (time (integrator     1))  ;; 1/2 для y=x
-    ;(time (integrator     2))  ;; 3/2 для y=x ???
+    (time (integrator     2))  ;; 3/2 для y=x ???
 )
 
