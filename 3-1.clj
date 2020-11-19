@@ -24,7 +24,7 @@
 )
 
 
-(defn partition- [n seq-]
+(defn partition-old [n seq-]
     (partition n seq-)
     (if (>= (count seq-) n)
         (cons (take n seq-) (partition- n (drop n seq-)))
@@ -32,7 +32,29 @@
     )
 )
 
+(defn partition- [n seq-]
 
+    (cond
+        (> (count seq-) n)
+            (do
+                (println ">" seq-)
+                (cons (take n seq-) (partition- n (drop n seq-)))
+            )
+
+        (= (count seq-) 0)
+            (do
+                (println "=" seq-)
+                '()
+            )
+
+        (< 0 (count seq-) n)
+            (do
+                (println "<" seq-)
+                (list seq-)
+            )
+
+    )
+)
 
 (defn filter- [pred seqq]
     ;;(println
@@ -46,18 +68,17 @@
     ;;)
 )
 
-(partition 3 (range 20))
-(range 20)
+(partition- 3 (range 20))
+;(range 20)
+;(partition n seq-)
 
-(defn if-test [a]
-    (cond
-        (> a 0) (println ">")
-        (= a 0) (println "=")
-        (< a 0) (println "<")
-    )
-)
+;;(defn tst [a]
+;;    (if (> a 0) :big)
+;;    (if (= a 0) :eq)
+;;    (if (< a 0) :sm)
+;;)
 
-(if-test -1)
+;;(tst 1)
 
 
 ;;(println "vanila filter")
