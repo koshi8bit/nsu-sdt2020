@@ -15,9 +15,10 @@
 
 
 
-(defn pmap- [f seqq]
+(defn pmap- [f coll]
     (->>
-        (map #(future (f %)) seqq)
+        ;(map #(future (f %)) coll)
+        (map #(future (doall (filter f %))) coll)
         (doall)
         (map deref)
     )
@@ -31,22 +32,13 @@
     (let [c (count seq-)]
         (cond
             (> c n)
-                (do
-                    ;(println ">" seq-)
-                    (cons (take n seq-) (partition- n (drop n seq-)))
-                )
+                (cons (take n seq-) (partition- n (drop n seq-)))
 
             (= c 0)
-                (do
-                    ;(println "=" seq-)
-                    '()
-                )
+                '()
 
             (and (< 0 c) (<= c n))
-                (do
-                    ;(println "< <=" seq-)
-                    (list seq-)
-                )
+                (list seq-)
         )
     )
 )
@@ -59,29 +51,27 @@
 
 (defn split-by-threads [threads coll]
     (let [res (Math/ceil (/ (count coll) threads))] ;; Math/ceil vs Math/round
-        (println "split-by-threads t:" threads "res:" res "coll:" coll)
-        res
+        ;(println "split-by-threads t:" threads "res:" res "coll:" coll)
+        (partition- res coll)
     )
 )
-(println "Math/round" (Math/round 2.6))
+;;(println "Math/round" (Math/round 2.6))
 
 
 
-(let [coll (range 7) t 4]
-    ;(println (split-by-threads t coll))
-    (println (partition- (split-by-threads t coll) coll))
-)
+;;(let [coll (range 40) t 4]
+;;    (println (split-by-threads t coll))
+;;)
 
 
 
-(defn filter- [pred seqq]
+(defn filter- [threads pred coll]
     ;;(println
         (->>
-            (pmap- pred seqq)
-            (map list seqq)
+            (split-by-threads threads coll)
+            (pmap- pred)
             (doall)
-            (filter second)
-            (map first)
+            (map conj)
         )
     ;;)
 )
@@ -89,15 +79,19 @@
 
 
 
+(let [f-pred heavy-even? coll (range 40)]
+    (println "vanila filter <")
+    (time
+        (println (filter f-pred coll))
+    )
+    (println "vanila filter >")
 
-;;(println "vanila filter")
-;;(time
-;;    (println (take 5 (filter heavy-even? (range 1000))))
-;;)
+    (println)
+    (println "FAAAST filter <")
+    (time
+        (println (filter- 4 f-pred coll))
+    )
+    (println "FAAAST filter >")
+    (println "fin!")
+)
 
-;;(println)
-;;(println "FAAAST filter")
-;;(time
-;;    (println (take 5 (filter- heavy-even? (range 1000))))
-;;)
-;;(println "fin!")
