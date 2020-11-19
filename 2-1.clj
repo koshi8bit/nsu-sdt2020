@@ -1,4 +1,4 @@
-(ns lab1.core
+(ns labs.core
   (:gen-class))
 
 (defn calc-trap [f a b]

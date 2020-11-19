@@ -4,7 +4,7 @@
 
 (defn calc-trap [f a b]
     (let [res (* (/ (+ (f a) (f b)) 2) (- b a))]
-        ;(println "calc-trap" res)
+        ;(println "calc-trap" "a:" a "b:" b "res:" res)
         res
     )
   )
