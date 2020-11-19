@@ -10,7 +10,7 @@
   )
 
 ;;--------------
-;; better way
+;; best way
 ;;(let [seqq (map #(* 2 %) (range))]
 ;;    (->>
 ;;        (map
@@ -24,23 +24,29 @@
 ;;)
 ;;--------------
 
-(defn get-integrator [f begin step]
+;; #(+ % (calc-trap f % (+ % step)))
+(defn get-integrator [f step]
     (let [ls (iterate
-                #(+ % (calc-trap f % (+ % step)))
-                begin)]
+                (fn [[integr indexx]]
+                    ;(println integr indexx)
+                    (list
+                        (+ integr (calc-trap f indexx (+ indexx step)))
+                        (+ indexx step)
+                    )
+                )
+                '(0 0))]
         (fn [k]
 ;;            (println "index" (/ k step))
-;;            (println (take 100 ls))
-            (nth ls (/ k step))
+            (first (nth ls (/ k step)))
         )
     )
 )
 
-(let [integrator (get-integrator (fn [x] x) 0 1)]
-    (time (integrator 10000))  ;; Elapsed time: 332.0941 msecs
-    (time (integrator 10015))  ;; Elapsed time: 1.2308 msecs
-    (time (integrator    20))  ;; Elapsed time: 0.5012 msecs
-    (time (integrator     1))  ;; 1/2 для y=x
-    (time (integrator     2))  ;; 3/2 для y=x ???
-)
 
+(let [integrator (get-integrator (fn [x] x) 1)]
+    (time (integrator 10000))  ;;"Elapsed time: 62.2315 msecs"
+    (time (integrator 10015))  ;;"Elapsed time: 0.9351 msecs"
+    (time (integrator  9998))  ;;"Elapsed time: 0.8551 msecs"
+    (time (integrator     1))  ;;"Elapsed time: 0.0083 msecs"
+    (time (integrator     3))  ;;"Elapsed time: 0.0426 msecs"
+)
