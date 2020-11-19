@@ -22,7 +22,7 @@
         (split-by-threads threads coll)
         (pmap- pred)
         (doall)
-        (map conj)
+        (mapcat (fn [x] x))
     )
 )
 
