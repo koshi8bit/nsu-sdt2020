@@ -40,6 +40,29 @@
     )
 )
 
+
+;;(let [r (range 5) split 3]
+;;    (println (partition- split r))
+;;    (println (partition split r))
+;;)
+
+(defn split-by-threads [threads coll]
+    (let [res (Math/ceil (/ (count coll) threads))] ;; Math/ceil vs Math/round
+        ;(println "split-by-threads t:" threads "res:" res "coll:" coll)
+        res
+    )
+)
+(println "Math/round" (Math/round 2.6))
+
+
+
+(let [coll (range 5) t 4]
+    (println (split-by-threads t coll))
+    ;(println (partition- (split-by-threads t coll) coll))
+)
+
+
+
 (defn filter- [pred seqq]
     ;;(println
         (->>
@@ -52,17 +75,8 @@
     ;;)
 )
 
-(partition- 3 (range 20))
-;(range 20)
-;(partition n seq-)
 
-;;(defn tst [a]
-;;    (if (> a 0) :big)
-;;    (if (= a 0) :eq)
-;;    (if (< a 0) :sm)
-;;)
 
-;;(tst 1)
 
 
 ;;(println "vanila filter")
