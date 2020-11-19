@@ -1,18 +1,10 @@
 (ns labs.core
   (:gen-class))
 
-
-
-(defn heavy-inc [n]
-    (Thread/sleep 100)
-    (inc n)
-)
-
 (defn heavy-even? [n]
     (Thread/sleep 100)
     (even? n)
 )
-
 
 
 (defn pmap- [f coll]
@@ -25,6 +17,14 @@
 )
 
 
+(defn filter- [threads pred coll]
+    (->>
+        (split-by-threads threads coll)
+        (pmap- pred)
+        (doall)
+        (map conj)
+    )
+)
 
 
 (defn partition- [n seq-]
@@ -42,12 +42,11 @@
         )
     )
 )
-
-
 ;;(let [r (range 5) split 1]
 ;;    (println (partition- split r))
 ;;    ;(println (partition split r))
 ;;)
+
 
 (defn split-by-threads [threads coll]
     (let [res (Math/ceil (/ (count coll) threads))] ;; Math/ceil vs Math/round
@@ -55,43 +54,23 @@
         (partition- res coll)
     )
 )
+;;(println (split-by-threads 4 (range 40)))
 ;;(println "Math/round" (Math/round 2.6))
 
 
-
-;;(let [coll (range 40) t 4]
-;;    (println (split-by-threads t coll))
-;;)
-
-
-
-(defn filter- [threads pred coll]
-    ;;(println
-        (->>
-            (split-by-threads threads coll)
-            (pmap- pred)
-            (doall)
-            (map conj)
-        )
-    ;;)
-)
-
-
-
-
 (let [f-pred heavy-even? coll (range 40)]
-    (println "vanila filter <")
+    (println "vanila filter begin")
     (time
         (println (filter f-pred coll))
     )
-    (println "vanila filter >")
+    (println "vanila filter end")
 
     (println)
-    (println "FAAAST filter <")
+    (println "FAAAST filter begin")
     (time
         (println (filter- 4 f-pred coll))
     )
-    (println "FAAAST filter >")
+    (println "FAAAST filter end")
     (println "fin!")
 )
 
