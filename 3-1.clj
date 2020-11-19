@@ -31,28 +31,14 @@
     ;;)
 )
 
-(defn -main
-    "I don't do a whole lot ... yet."
-    [& args]
-    (println "vanila filter")
-    (time
-        (println (take 5 (filter heavy-even? (range 1000))))
-    )
-
-    (println)
-    (println "FAAAST filter")
-    (time
-        (println (take 5 (filter- heavy-even? (range 1000))))
-    )
-
-    (println)
-    (println "vanila filter")
-    (time
-        (println (take 5 (filter heavy-even? (range 1000))))
-    )
-
-    (println "fin!")
+(println "vanila filter")
+(time
+    (println (take 5 (filter heavy-even? (range 1000))))
 )
 
-
-(-main)
+(println)
+(println "FAAAST filter")
+(time
+    (println (take 5 (filter- heavy-even? (range 1000))))
+)
+(println "fin!")
