@@ -24,35 +24,19 @@
 )
 
 
-(defn partition-old [n seq-]
-    (partition n seq-)
-    (if (>= (count seq-) n)
-        (cons (take n seq-) (partition- n (drop n seq-)))
-        '()
-    )
-)
+
 
 (defn partition- [n seq-]
 
     (cond
         (> (count seq-) n)
-            (do
-                (println ">" seq-)
-                (cons (take n seq-) (partition- n (drop n seq-)))
-            )
+            (cons (take n seq-) (partition- n (drop n seq-)))
 
         (= (count seq-) 0)
-            (do
-                (println "=" seq-)
-                '()
-            )
+            '()
 
         (< 0 (count seq-) n)
-            (do
-                (println "<" seq-)
-                (list seq-)
-            )
-
+            (list seq-)
     )
 )
 
