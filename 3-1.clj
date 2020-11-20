@@ -21,7 +21,7 @@
         (split-by-threads threads coll)
         (pmap- pred)
         (doall)
-        (flatten)
+        (apply concat)
     )
 )
 
@@ -56,8 +56,13 @@
 ;;(println (split-by-threads 4 (range 40)))
 ;;(println "Math/round" (Math/round 2.6))
 
+(defn heavy-count [coll]
+    (Thread/sleep 100)
+    (count coll)
+)
 
-(let [f-pred heavy-even? coll (range 40)]
+(let [f-pred (fn [coll] (>= (heavy-count coll) 5))
+      coll (list (range 2) (range 5) (range 7) (range 10))]
     (println "vanila filter begin")
     (time
         (println (filter f-pred coll))
