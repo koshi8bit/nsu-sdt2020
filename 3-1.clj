@@ -9,7 +9,6 @@
 
 (defn pmap- [f coll]
     (->>
-        ;(map #(future (f %)) coll)
         (map #(future (doall (filter f %))) coll)
         (doall)
         (map deref)
@@ -22,7 +21,7 @@
         (split-by-threads threads coll)
         (pmap- pred)
         (doall)
-        (flatten) ;;(mapcat (fn [x] x))
+        (flatten)
     )
 )
 
