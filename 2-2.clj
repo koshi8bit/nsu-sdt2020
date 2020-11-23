@@ -36,9 +36,28 @@
                 )
                 (list 0 0))]
         (fn [k]
-;;          (if (= 0 (mod
-;;            (println "index" (/ k step))
-            (first (nth ls (/ k step)))
+;;          (println "index" (/ k step))
+            (let [coll (nth ls (/ k step))]
+                (if (= 0 (mod k step))
+                    (do
+                        ;;(println "mod = 0")
+                        (first coll)
+                    )
+                    (do
+                        ;;(println "mod != 0")
+                        ;;(println "coll" coll (/ k step) (- (/ k step) (second coll)))
+
+                        (+
+                            (first coll)
+                            (calc-trap
+                                f
+                                (second coll)
+                                (+ (second coll) (- (/ k step) (second coll)))
+                            )
+                        )
+                    )
+                )
+            )
         )
     )
 )
@@ -53,4 +72,13 @@
 (let [integrator (get-integrator (fn [x] (* x x)) 1/100)]
     (println (integrator  3))  ;; 180001/20000 ~ 9
     (println (integrator  2))  ;; 26667/10000  ~ 2.66667
+    (println (integrator  5/2));;
 )
+
+(let [integrator (get-integrator (fn [x] (* x x)) 1)]
+    (println (integrator   5))
+    (println (integrator  21/10)) ;; 0-2 - lazy; 2-2.1 - trap
+)
+
+
+
