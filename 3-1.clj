@@ -9,7 +9,7 @@
 
 (defn pmap-my [f coll]
     (->>
-        (map #(future (doall (filter f %))) coll)
+        (map #(future (f %)) coll)
         (doall)
         (map deref)
     )
@@ -50,14 +50,11 @@
 (defn filter-my [threads pred coll]
     (->>
         (split-by-threads threads coll)
-        (pmap-my pred)
+        (pmap-my #(doall (filter pred %)))
         (doall)
         (apply concat)
     )
 )
-
-
-
 
 
 (defn heavy-count [coll]
