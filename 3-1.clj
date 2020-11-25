@@ -7,7 +7,7 @@
 )
 
 
-(defn pmap- [f coll]
+(defn pmap-my [f coll]
     (->>
         (map #(future (doall (filter f %))) coll)
         (doall)
@@ -16,18 +16,18 @@
 )
 
 
-(defn partition- [n seq-]
+(defn partition-my [n coll]
     ;(println "partition-" n seq-)
-    (let [c (count seq-)]
+    (let [c (count coll)]
         (cond
             (> c n)
-                (cons (take n seq-) (partition- n (drop n seq-)))
+                (cons (take n coll) (partition-my n (drop n coll)))
 
             (= c 0)
                 '()
 
             (and (< 0 c) (<= c n))
-                (list seq-)
+                (list coll)
         )
     )
 )
@@ -40,17 +40,17 @@
 (defn split-by-threads [threads coll]
     (let [res (Math/ceil (/ (count coll) threads))] ;; Math/ceil vs Math/round
         ;(println "split-by-threads t:" threads "res:" res "coll:" coll)
-        (partition- res coll)
+        (partition-my res coll)
     )
 )
 ;;(println (split-by-threads 4 (range 40)))
 ;;(println "Math/round" (Math/round 2.6))
 
 
-(defn filter- [threads pred coll]
+(defn filter-my [threads pred coll]
     (->>
         (split-by-threads threads coll)
-        (pmap- pred)
+        (pmap-my pred)
         (doall)
         (apply concat)
     )
@@ -76,7 +76,7 @@
     (println)
     (println "FAAAST filter begin")
     (time
-        (println (filter- 4 f-pred coll))
+        (println (filter-my 4 f-pred coll))
     )
     (println "FAAAST filter end")
     (println "fin!")
