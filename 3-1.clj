@@ -16,16 +16,6 @@
 )
 
 
-(defn filter- [threads pred coll]
-    (->>
-        (split-by-threads threads coll)
-        (pmap- pred)
-        (doall)
-        (apply concat)
-    )
-)
-
-
 (defn partition- [n seq-]
     ;(println "partition-" n seq-)
     (let [c (count seq-)]
@@ -55,6 +45,20 @@
 )
 ;;(println (split-by-threads 4 (range 40)))
 ;;(println "Math/round" (Math/round 2.6))
+
+
+(defn filter- [threads pred coll]
+    (->>
+        (split-by-threads threads coll)
+        (pmap- pred)
+        (doall)
+        (apply concat)
+    )
+)
+
+
+
+
 
 (defn heavy-count [coll]
     (Thread/sleep 100)
