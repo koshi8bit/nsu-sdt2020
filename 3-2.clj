@@ -7,54 +7,48 @@
 )
 
 
-(defn pmap- [f coll]
+(defn pmap-my [f coll]
     (->>
-        (map #(future (doall (filter f %))) coll)
+        (map #(future (f %)) coll)
         (doall)
         (map deref)
     )
 )
 
 
-(defn filter- [threads pred coll]
+(defn partition-my [n coll]
+    ;(println "partition-my" n coll)
+    (lazy-seq
+        (cons
+            (take n coll)
+            (partition-my n (drop n coll))
+        )
+    )
+)
+
+(let [r (range 10) split 4]
+    (println (take 5 (partition-my split r)))
+    (println (take 5 (partition split r)))
+)
+
+
+;; chunkk - данных на кусочке
+;; batch  - одновременно несколько задач
+(defn filter-my [chunkk batch pred coll]
     (->>
-        (split-by-threads threads coll)
-        (pmap- pred)
+        ;;(split-by-threads threads coll)
+        ;;(partition-my (* chunkk batch) coll)
+        (partition-my chunkk coll)
+        (do
+            (println)
+
+        )
+        (pmap-my #(doall (filter pred %)))
         (doall)
         (apply concat)
     )
 )
 
-
-(defn partition- [n seq-]
-    ;(println "partition-" n seq-)
-    (let [c (count seq-)]
-        (cond
-            (> c n)
-                (cons (take n seq-) (partition- n (drop n seq-)))
-
-            (= c 0)
-                '()
-
-            (and (< 0 c) (<= c n))
-                (list seq-)
-        )
-    )
-)
-;;(let [r (range 5) split 1]
-;;    (println (partition- split r))
-;;    ;(println (partition split r))
-;;)
-
-
-(defn split-by-threads [threads coll]
-    (let [res (Math/ceil (/ (count coll) threads))] ;; Math/ceil vs Math/round
-        ;(println "split-by-threads t:" threads "res:" res "coll:" coll)
-        (partition- res coll)
-    )
-)
-;;(println (split-by-threads 4 (range 40)))
-;;(println "Math/round" (Math/round 2.6))
 
 (defn heavy-count [coll]
     (Thread/sleep 100)
@@ -72,7 +66,7 @@
     (println)
     (println "FAAAST filter begin")
     (time
-        (println (filter- 4 f-pred coll))
+        ;(println (filter-my 3 2 f-pred coll))
     )
     (println "FAAAST filter end")
     (println "fin!")
