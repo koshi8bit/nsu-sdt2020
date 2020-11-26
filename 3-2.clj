@@ -27,27 +27,28 @@
         )
     )
 )
-
 ;;(let [r (range 10) split 4]
 ;;    (println (take 5 (partition-my split r)))
 ;;    (println (take 5 (partition split r)))
 ;;)
 
 
-;; chunkk - данных на кусочке
-;; batch  - одновременно несколько задач
-(defn filter-my [chunkk batch pred coll]
+;; chunkk - данных на кусочке (последовательно)
+;; batch  - одновременно несколько задач (параллельно)
+(defn filter-my [chunkk batch f-pred coll]
     (->>
-        ;;(split-by-threads threads coll)
         (partition-my (* chunkk batch) coll)
         (#(do (println %) %))
         (map #(partition-my chunkk %))
         (#(do (println %) %))
-        ;;(map (pmap-my #(doall (filter pred %))))
-;;        (apply concat)
-;;        (pmap-my #(doall (filter pred %)))
+        (map (fn [coll2]
+            (apply
+                concat
+                (pmap-my #(doall (filter f-pred %)) coll2)
+            ))
+        )
 ;;        (doall)
-;;        (apply concat)
+        (apply concat)
     )
 )
 
@@ -57,9 +58,9 @@
     (count coll)
 )
 
-;;(let [f-pred (fn [coll] (>= (heavy-count coll) 4))
-;;      coll (list (range 1) (range 2) (range 3) (range 4))]
-(let [f-pred even? coll (range 20)]
+(let [f-pred (fn [coll] (>= (heavy-count coll) 3))
+      coll (list (range 1) (range 2) (range 3) (range 4))]
+;;(let [f-pred even? coll (range 20)]
     (println "vanila filter begin")
     (time
         (println (filter f-pred coll))
