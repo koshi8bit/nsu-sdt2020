@@ -38,9 +38,9 @@
 (defn filter-my [chunkk batch f-pred coll]
     (->>
         (partition-my (* chunkk batch) coll)
-        (#(do (println %) %))
+        ;;(#(do (println %) %))
         (map #(partition-my chunkk %))
-        (#(do (println %) %))
+        ;;(#(do (println %) %))
         (map (fn [coll2]
             (apply
                 concat
