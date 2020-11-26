@@ -18,18 +18,20 @@
 
 (defn partition-my [n coll]
     ;(println "partition-my" n coll)
-    (lazy-seq
-        (cons
-            (take n coll)
-            (partition-my n (drop n coll))
+    (when (not (empty? coll))
+        (lazy-seq
+            (cons
+                (take n coll)
+                (partition-my n (drop n coll))
+            )
         )
     )
 )
 
-(let [r (range 10) split 4]
-    (println (take 5 (partition-my split r)))
-    (println (take 5 (partition split r)))
-)
+;;(let [r (range 10) split 4]
+;;    (println (take 5 (partition-my split r)))
+;;    (println (take 5 (partition split r)))
+;;)
 
 
 ;; chunkk - данных на кусочке
@@ -39,10 +41,7 @@
         ;;(split-by-threads threads coll)
         ;;(partition-my (* chunkk batch) coll)
         (partition-my chunkk coll)
-        (do
-            (println)
-
-        )
+        (#(do (println %) %))
         (pmap-my #(doall (filter pred %)))
         (doall)
         (apply concat)
@@ -55,8 +54,10 @@
     (count coll)
 )
 
-(let [f-pred (fn [coll] (>= (heavy-count coll) 5))
-      coll (list (range 2) (range 5) (range 7) (range 10))]
+;;(let [f-pred (fn [coll] (>= (heavy-count coll) 4))
+;;      coll (list (range 1) (range 2) (range 3) (range 4))]
+(let [f-pred even?
+      coll (range 10)]
     (println "vanila filter begin")
     (time
         (println (filter f-pred coll))
@@ -66,7 +67,7 @@
     (println)
     (println "FAAAST filter begin")
     (time
-        ;(println (filter-my 3 2 f-pred coll))
+        (println (filter-my 3 2 f-pred coll))
     )
     (println "FAAAST filter end")
     (println "fin!")
