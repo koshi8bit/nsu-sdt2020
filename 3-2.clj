@@ -37,10 +37,9 @@
 ;; batch  - одновременно несколько задач (параллельно)
 (defn filter-my [chunkk batch f-pred coll]
     (->>
-        (partition-my (* chunkk batch) coll)
-        ;;(#(do (println %) %))
-        (map #(partition-my chunkk %))
-        ;;(#(do (println %) %))
+        coll
+        (partition-my chunkk)
+        (partition-my batch)
         (map (fn [coll2]
             (apply
                 concat
@@ -74,5 +73,8 @@
     )
     (println "FAAAST filter end")
     (println "fin!")
+
+    (pmap-my #(map inc %) '((1 2 3 4) (5) (6 7))) ;; (false true false true false true false)
+
 )
 
