@@ -40,13 +40,7 @@
         coll
         (partition-my chunkk)
         (partition-my batch)
-        (map (fn [coll2]
-            (apply
-                concat
-                (pmap-my #(doall (filter f-pred %)) coll2)
-            ))
-        )
-;;        (doall)
+        (mapcat (fn [coll2] (pmap-my #(doall (filter f-pred %)) coll2)))
         (apply concat)
     )
 )
@@ -74,7 +68,7 @@
     (println "FAAAST filter end")
     (println "fin!")
 
-    (pmap-my #(map inc %) '((1 2 3 4) (5) (6 7))) ;; (false true false true false true false)
+    ;;(pmap-my #(map inc %) '((1 2 3 4) (5) (6 7))) ;; (false true false true false true false)
 
 )
 
