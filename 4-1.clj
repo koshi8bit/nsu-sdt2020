@@ -207,3 +207,6 @@
     )
 )
 
+;;1 (:labs.core/xor (:labs.core/const true) (:labs.core/not :labs.core/not :labs.core/var :b))
+;;2 true
+;;3 (:labs.core/and ((:labs.core/const true) (:labs.core/var :b)))
