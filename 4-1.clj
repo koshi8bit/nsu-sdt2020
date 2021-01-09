@@ -169,8 +169,10 @@
              (if ((first rule) expr var value)
                  (second rule)
                  false))
-         calculate_rules)
-     expr var value))
+         calculate_rules
+    )
+    expr var value)
+)
 
 (defn get-result [expr]
     (if (constant? expr)
@@ -190,9 +192,9 @@
 )
 
 (println "2" (get-result (calculate
-    (f-impl
-        (constant false)
-        (variable :a)
+    (f-or
+        (constant true)
+        (variable :c)
     )
     (variable :a) (constant false)))
 )
