@@ -163,6 +163,7 @@
         ))
 
 (defn calculate [expr var value]
+    ;;(println expr var value)
     ((some
          (fn [rule]
              (if ((first rule) expr var value)
@@ -191,8 +192,16 @@
 (println "2" (get-result (calculate
     (f-impl
         (constant false)
-        (constant false)
+        (variable :a)
     )
-    (variable :a) (constant true)))
+    (variable :a) (constant false)))
+)
+
+(println "3" (get-result
+        (calculate
+            (f-and (variable :a) (variable :b))
+            (variable :a) (constant true)
+        )
+    )
 )
 
