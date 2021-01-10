@@ -320,9 +320,6 @@
 (println "dnf04" dnf04tst)
 
 
-;;1 (:labs.core/xor (:labs.core/const true) (:labs.core/not :labs.core/not :labs.core/var :b))
-;;2 true
-;;3 (:labs.core/and ((:labs.core/const true) (:labs.core/var :b)))
 ;;dnf00 (:labs.core/not :labs.core/or (:labs.core/impl (:labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/impl (:labs.core/var :y) (:labs.core/var :z)))
 ;;dnf01 (:labs.core/not :labs.core/or (:labs.core/or (:labs.core/not :labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/or (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
 ;;dnf0203 (:labs.core/and (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y)) (:labs.core/or (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
