@@ -266,7 +266,6 @@
     (->>
         dnf00tst
         dnf01
-        get-result
     )
 )
 (println "dnf01" dnf01tst)
