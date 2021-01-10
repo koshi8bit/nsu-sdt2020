@@ -367,15 +367,9 @@
 (println)
 (println "dnf" (get-result
         (calculate
-            (dnf (f-or (variable :x) (f-or (f-not (variable :y)) (variable :y))))
+            (f-or (variable :x) (f-or (f-not (variable :y)) (variable :y)))
             ;;(dnf dnf00tst)
             (variable :x) (constant false)
         )
     )
 )
-
-
-;;dnf00 (:labs.core/not :labs.core/or (:labs.core/impl (:labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/impl (:labs.core/var :y) (:labs.core/var :z)))
-;;dnf01 (:labs.core/not :labs.core/or (:labs.core/or (:labs.core/not :labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/or (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
-;;dnf0203 (:labs.core/and (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y)) (:labs.core/or (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
-;;dnf04 (:labs.core/or (:labs.core/and :labs.core/and (:labs.core/not :labs.core/var :y)) (:labs.core/and :labs.core/and (:labs.core/var :z)) (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y)) (:labs.core/and (:labs.core/var :x) (:labs.core/var :z)) (:labs.core/and (:labs.core/not :labs.core/var :y) (:labs.core/not :labs.core/var :y)) (:labs.core/and (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
