@@ -370,7 +370,6 @@
     )
 )
 
-(println "lol" dnf99tst)
 (println "source" dnf00tst)
 (println "dnf" (dnf dnf00tst))
 (println "dnf calc" (get-result
