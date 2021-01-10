@@ -216,6 +216,12 @@
 ;; DNF
 ;; https://ru.wikipedia.org/wiki/%D0%94%D0%B8%D0%B7%D1%8A%D1%8E%D0%BD%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F_%D0%BD%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D1%84%D0%BE%D1%80%D0%BC%D0%B0
 
+
+(def dnf00tst
+    (f-not (f-or (f-impl (variable :x) (variable :y)) (f-not (f-impl (variable :y) (variable :z)))))
+)
+(println "dnf00" dnf00tst)
+
 (declare simplification)
 (def dnf01-rules
     (list
@@ -251,22 +257,15 @@
     )
 )
 
+
 (def dnf01tst
-    (get-result
-        (dnf01
-            (f-not (f-or (f-impl (variable :x) (variable :y)) (f-not (f-impl (variable :y) (variable :z)))))
-        )
+    (->>
+        dnf00tst
+        dnf01
+        get-result
     )
 )
 (println "dnf01" dnf01tst)
-
-;;(println "dnf01"
-;;    (get-result
-;;        (dnf01
-;;            (f-xor (variable :x) (variable :y))
-;;        )
-;;    )
-;;)
 
 (defn dnf0203 [expr]
     (if (f-not? expr)
@@ -286,54 +285,45 @@
 )
 
 (def dnf0203tst
-    (get-result
-        (dnf0203
-            dnf01tst
-        )
+    (->>
+        dnf01tst
+        dnf0203
+        get-result
     )
 )
 (println "dnf0203" dnf0203tst)
 
-;;(println "dnf0203"
-;;    (get-result
-;;        (dnf0203
-;;            (f-not (f-or (variable :x) (variable :y)))
-;;        )
-;;    )
-;;)
+(defn conjj [expr1 expr2]
+    (if (f-or? expr1)
+        (if (f-or? expr2)
+            (for [x (rest expr1) y (rest expr2)] (f-and x y))
+            (for [x (rest expr1)] (f-and x expr2)))
+        (if (f-or? expr2)
+            (for [x (rest expr2)] (f-and expr1 x))
+            (f-and expr1 expr2))))
 
-;;(defn conjj [expr1 expr2]
-;;  (if (f-or? expr1)
-;;    (if (f-or? expr2)
-;;      (for [x (rest expr1) y (rest expr2)] (f-and x y))
-;;      (for [x (rest expr1)] (f-and x expr2)))
-;;    (if (f-or? expr2)
-;;      (for [x (rest expr2)] (f-and expr1 x))
-;;      (f-and expr1 expr2))))
+(defn dnf04 [expr]
+    (cond
+        (f-or? expr) (apply f-or (map dnf04 (rest expr)))
+        (f-and? expr) (reduce #(apply f-or (conjj %1 %2)) (map dnf04 (rest expr)))
+        :else expr
+    )
+)
 
-;;(defn dnf04 [expr]
-;;    (cond
-;;        (f-or? expr) (apply f-or (map dnf04 (rest expr)))
-;;        (f-and? expr) (reduce #(apply f-or (conjj %1 %2)) (map dnf04 (rest expr)))
-;;        :else expr
-;;    )
-;;)
-
-;;(println "dnf04"
-;;    (get-result
-;;        (dnf04
-;;            (f-and (f-not (variable :x)) (:labs.core/not :labs.core/var :y))
-;;        )
-;;    )
-;;)
+(def dnf04tst
+    (->>
+        dnf0203tst
+        dnf04
+        get-result
+    )
+)
+(println "dnf04" dnf04tst)
 
 
-;;(defn dnf05 [expr]
-;;  (cond
-;;    (disjunction? expr)
-;;    (apply disjunction (reduce #(if (disjunction? %2) (concat %1 (rest %2)) (cons %2 %1)) (cons '() (distinct (map dnf05 (rest expr))))))
-
-;;    (conjunction? expr)
-;;    (apply conjunction (reduce #(if (conjunction? %2) (concat %1 (rest %2)) (cons %2 %1)) (cons '() (distinct (map dnf05 (rest expr))))))
-;;    :else expr))
-
+1 (:labs.core/xor (:labs.core/const true) (:labs.core/not :labs.core/not :labs.core/var :b))
+2 true
+3 (:labs.core/and ((:labs.core/const true) (:labs.core/var :b)))
+dnf00 (:labs.core/not :labs.core/or (:labs.core/impl (:labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/impl (:labs.core/var :y) (:labs.core/var :z)))
+dnf01 (:labs.core/not :labs.core/or (:labs.core/or (:labs.core/not :labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/or (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
+dnf0203 (:labs.core/and (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y)) (:labs.core/or (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
+dnf04 (:labs.core/or (:labs.core/and :labs.core/and (:labs.core/not :labs.core/var :y)) (:labs.core/and :labs.core/and (:labs.core/var :z)) (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y)) (:labs.core/and (:labs.core/var :x) (:labs.core/var :z)) (:labs.core/and (:labs.core/not :labs.core/var :y) (:labs.core/not :labs.core/var :y)) (:labs.core/and (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
