@@ -220,6 +220,12 @@
 )
 (println "dnf00" dnf00tst)
 
+(def dnf99tst
+    (f-or (f-and (variable :x) (f-not (variable :y))) (f-and (variable :x) (f-not (variable :y)) (variable :z)))
+)
+;;(println "dnf99" dnf99tst)
+;;(dnf (f-or (variable :x) (f-or (f-not (variable :y)) (variable :y))))
+
 (declare simplification)
 (def dnf01-rules
     (list
@@ -364,12 +370,17 @@
     )
 )
 
-(println)
-(println "dnf" (get-result
+(println "lol" dnf99tst)
+(println "source" dnf00tst)
+(println "dnf" (dnf dnf00tst))
+(println "dnf calc" (get-result
         (calculate
-            (f-or (variable :x) (f-or (f-not (variable :y)) (variable :y)))
-            ;;(dnf dnf00tst)
-            (variable :x) (constant false)
+            (dnf dnf00tst)
+            (variable :x) (constant true)
         )
     )
 )
+
+;;source (:labs.core/not :labs.core/or (:labs.core/impl (:labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/impl (:labs.core/var :y) (:labs.core/var :z)))
+;;dnf (:labs.core/or (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y)) (:labs.core/and (:labs.core/var :x) (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
+;;dnf calc (:labs.core/or (:labs.core/and (:labs.core/not :labs.core/var :y)) (:labs.core/and (:labs.core/not :labs.core/var :y) (:labs.core/var :z)))
