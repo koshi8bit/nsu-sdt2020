@@ -214,8 +214,6 @@
 ;;3 (:labs.core/and ((:labs.core/const true) (:labs.core/var :b)))
 
 ;; DNF
-;; https://ru.wikipedia.org/wiki/%D0%94%D0%B8%D0%B7%D1%8A%D1%8E%D0%BD%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F_%D0%BD%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D1%84%D0%BE%D1%80%D0%BC%D0%B0
-
 
 (def dnf00tst
     (f-not (f-or (f-impl (variable :x) (variable :y)) (f-not (f-impl (variable :y) (variable :z)))))
@@ -300,13 +298,19 @@
             (for [x (rest expr1)] (f-and x expr2)))
         (if (f-or? expr2)
             (for [x (rest expr2)] (f-and expr1 x))
-            (f-and expr1 expr2))))
+            (f-and expr1 expr2)
+        )
+    )
+)
 
 (defn dnf04 [expr]
-    (cond
-        (f-or? expr) (apply f-or (map dnf04 (rest expr)))
-        (f-and? expr) (reduce #(apply f-or (conjj %1 %2)) (map dnf04 (rest expr)))
-        :else expr
+    (if true
+        expr
+        (cond
+            (f-or? expr) (apply f-or (map dnf04 (rest expr)))
+            (f-and? expr) (reduce #(apply f-or (conjj %1 %2)) (map dnf04 (rest expr)))
+            :else expr
+        )
     )
 )
 
@@ -318,6 +322,57 @@
     )
 )
 (println "dnf04" dnf04tst)
+
+
+(defn dnf05 [expr]
+    (cond
+        (f-or? expr)
+            (apply f-or
+                (reduce
+                    #(if (f-or? %2) (concat %1 (rest %2)) (cons %2 %1))
+                    (cons '() (distinct (map dnf05 (rest expr))))
+                )
+            )
+        (f-and? expr)
+            (apply f-and
+                (reduce
+                    #(if (f-and? %2) (concat %1 (rest %2)) (cons %2 %1))
+                    (cons '() (distinct (map dnf05 (rest expr))))
+                )
+            )
+
+        :else expr
+    )
+)
+
+(def dnf05tst
+    (->>
+        dnf04tst
+        dnf05
+        get-result
+    )
+)
+(println "dnf05" dnf05tst)
+
+(defn dnf [expr]
+    (->>
+        expr      ;; Далее будет реализована инструкция с вики https://ru.wikipedia.org/wiki/%D0%94%D0%B8%D0%B7%D1%8A%D1%8E%D0%BD%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F_%D0%BD%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D1%84%D0%BE%D1%80%D0%BC%D0%B0
+        dnf01     ;; Избавиться от всех логических операций, содержащихся в формуле, заменив их основными: конъюнкцией, дизъюнкцией, отрицанием
+        dnf0203   ;; Раскрываем скобки и избавляемся от знаков двойного отрицания
+        dnf04     ;; Применить, если нужно, к операциям конъюнкции и дизъюнкции свойства дистрибутивности
+        dnf05     ;; Используем идемпотентность конъюкции
+    )
+)
+
+(println)
+(println "dnf" (get-result
+        (calculate
+            (dnf (f-or (variable :x) (f-or (f-not (variable :y)) (variable :y))))
+            ;;(dnf dnf00tst)
+            (variable :x) (constant false)
+        )
+    )
+)
 
 
 ;;dnf00 (:labs.core/not :labs.core/or (:labs.core/impl (:labs.core/var :x) (:labs.core/var :y)) (:labs.core/not :labs.core/impl (:labs.core/var :y) (:labs.core/var :z)))
