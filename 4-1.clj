@@ -251,13 +251,22 @@
     )
 )
 
-(println "dnf01"
+(def dnf01tst
     (get-result
         (dnf01
-            (f-xor (variable :x) (variable :y))
+            (f-not (f-or (f-impl (variable :x) (variable :y)) (f-not (f-impl (variable :y) (variable :z)))))
         )
     )
 )
+(println "dnf01" dnf01tst)
+
+;;(println "dnf01"
+;;    (get-result
+;;        (dnf01
+;;            (f-xor (variable :x) (variable :y))
+;;        )
+;;    )
+;;)
 
 (defn dnf0203 [expr]
     (if (f-not? expr)
@@ -276,12 +285,55 @@
     )
 )
 
-(println "dnf0203"
+(def dnf0203tst
     (get-result
         (dnf0203
-            (f-not (f-or (variable :x) (variable :y)))
+            dnf01tst
         )
     )
 )
+(println "dnf0203" dnf0203tst)
 
+;;(println "dnf0203"
+;;    (get-result
+;;        (dnf0203
+;;            (f-not (f-or (variable :x) (variable :y)))
+;;        )
+;;    )
+;;)
+
+;;(defn conjj [expr1 expr2]
+;;  (if (f-or? expr1)
+;;    (if (f-or? expr2)
+;;      (for [x (rest expr1) y (rest expr2)] (f-and x y))
+;;      (for [x (rest expr1)] (f-and x expr2)))
+;;    (if (f-or? expr2)
+;;      (for [x (rest expr2)] (f-and expr1 x))
+;;      (f-and expr1 expr2))))
+
+;;(defn dnf04 [expr]
+;;    (cond
+;;        (f-or? expr) (apply f-or (map dnf04 (rest expr)))
+;;        (f-and? expr) (reduce #(apply f-or (conjj %1 %2)) (map dnf04 (rest expr)))
+;;        :else expr
+;;    )
+;;)
+
+;;(println "dnf04"
+;;    (get-result
+;;        (dnf04
+;;            (f-and (f-not (variable :x)) (:labs.core/not :labs.core/var :y))
+;;        )
+;;    )
+;;)
+
+
+;;(defn dnf05 [expr]
+;;  (cond
+;;    (disjunction? expr)
+;;    (apply disjunction (reduce #(if (disjunction? %2) (concat %1 (rest %2)) (cons %2 %1)) (cons '() (distinct (map dnf05 (rest expr))))))
+
+;;    (conjunction? expr)
+;;    (apply conjunction (reduce #(if (conjunction? %2) (concat %1 (rest %2)) (cons %2 %1)) (cons '() (distinct (map dnf05 (rest expr))))))
+;;    :else expr))
 
