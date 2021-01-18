@@ -5,6 +5,9 @@
     ;(println "calc-trap" a b)
   (* (/ (+ (f a) (f b)) 2) (- b a)))
 
+
+(declare integrate-mem)
+
 (defn integrate [f end delta]
   (println "integrate" end)
   (if (<= end 0)
@@ -19,14 +22,16 @@
 
 (letfn [(f [x] (* x x))]
   (println "calc")
-  (time (integrate-mem f 100 1))
-  (time (integrate-mem f 200 1))
-  (time (integrate-mem f 300 1))
-  (time (integrate-mem f 400 1))
-  (time (integrate-mem f 500 1))
+  (println (time (integrate-mem f 100 1)))
+  (println (time (integrate-mem f 200 1)))
+  (println (time (integrate-mem f 300 1)))
+  (println (time (integrate-mem f 400 1)))
+  (println (time (integrate-mem f 500 1)))
   (println "read from mem")
-  (time (integrate-mem f 9 1))) ; mem ok
+  (println (time (integrate-mem f 9 1))) ; mem ok
+  (println (integrate-mem f 9 1))
+)
 
-(time (integrate-mem #(* x x) 200 1) ; stack fault
-(time (integrate-mem #(* x x) 9 1))  ; not memed, тк функция каждый раз новая для интерпритатора
+(time (integrate-mem #(* % %) 200 1)) ; stack fault, memoize fault
+(time (integrate-mem #(* % %)   9 1)) ; not memed, тк функция каждый раз новая для интерпритатора
 
